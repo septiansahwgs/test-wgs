@@ -1,0 +1,11 @@
+development:
+    dialect: postgres
+    datasource: host=localhost dbname=db_products user=postgres password=admin123 sslmode=disable
+    dir: config/migrations
+    table: migrations
+
+production:
+    dialect: postgres
+    datasource: dbname=myapp sslmode=disable
+    dir: migrations/postgres
+    table: migrations

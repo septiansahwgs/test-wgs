@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: db_products
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: admin
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5435:5435"
+    networks:
+      - go_network
+ 
+  pgadmin:
+    image: dpage/pgadmin4:4.18
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@wgs.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8081:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "postgres:pgsql-server"
+    networks:
+      - go_network
+
+  go: 
+    container_name: go
+    environment:
+      - DB_NAME=db_product
+      - DB_HOST=kuncie-TestCoding_postgres_1
+      - DB_PORT=5432
+      - DB_USER=user
+      - DB_PASS=admin
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - "postgres"
+    ports:
+      - "8002:8002"
+    networks:
+      - go_network
+
+networks:
+  go_network:
+
+volumes:
+  db-data:
+  pgadmin-data:
